@@ -1,0 +1,13 @@
+## Requriements for CLI project
+# Python version
+python>=3.8,<4.0
+# Required packages
+click
+requests
+firebase
+firebase-admin
+rich
+calendar
+time
+datetime
+# Optional packages
