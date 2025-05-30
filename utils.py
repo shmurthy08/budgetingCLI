@@ -36,6 +36,7 @@ def check_reset_expenses(user_json):
             click.echo("Resetting expenses for the new month...")
             user_json = rewards_system(user_json)
             user_json['spending'] = {}
+            user_json['notes'] = []
     else: 
         click.echo("No last login date found. Setting up for the first time.")
         user_json['last_login'] = today.strftime('%Y-%m-%d')

@@ -63,7 +63,9 @@ def dashboard(user_json=None):
         click.echo("5. Update Spending Entry")
         click.echo("6. Delete Spending Entry")
         click.echo("7. Talk to Qwen AI")
-        click.echo("8. Exit")
+        click.echo("8. General Notes")
+        click.echo("9. View Notes")
+        click.echo("10. Exit")
         option = click.prompt("Please select an option", type=int)
         # Wait for 5 seconds
         time.sleep(2)
@@ -97,6 +99,12 @@ def dashboard(user_json=None):
             click.echo("Calling Qwen AI for you!") 
             talk_to_Qwen(user_json)
         elif option == 8:
+            click.echo("Opening notes section")
+            user = general_notes(user_json)
+            update_user(user['username'], user)
+        elif option == 9:
+            view_notes(user_json)
+        elif option == 10:
             click.echo("Exiting Dashboard. Goodbye!")
         else:
             click.echo("Invalid option. Please try again.")
@@ -479,6 +487,33 @@ def talk_to_Qwen(user_json):
             break
         generate_advice(user_json, user_input)
         
+def general_notes(user_json):
+    """General Notes the user can add"""
+    # Add notes to user_json
+    user_json.setdefault('notes', [])
+    while True:
+        note = click.prompt("Enter notes (type 'exit' when done)", type = str)
+        if re.search(r'\b(exit|done|quit)\b', note.lower()):
+            click.echo("Exiting notes section.")
+            break
+        user_json['notes'].append({
+            "text": note,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
+    return user_json
     
+def view_notes(user_json):
+    """General Notes the user can view"""
+    click.echo("\n --- View Notes ---")
+    notes = user_json.get('notes', [])
+    if not notes:
+        click.echo("No notes found.")
+        return
+    console = Console()
+    notes_table = Table(title="User Notes", show_header=True, header_style="bold blue")
+    notes_table.add_column("Note", style="cyan")
+    for note in notes:
+        notes_table.add_row(note)
+    console.print(notes_table)
     
 cli.add_command(login)
