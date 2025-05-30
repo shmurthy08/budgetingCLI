@@ -6,6 +6,8 @@ from rich.console import Console
 from rich.table import Table
 import datetime
 from utils import get_days_elapsed, get_days_in_month, project_spending, check_reset_expenses
+from ai_chatting import generate_advice
+import re
 
 
 ### Click group
@@ -50,7 +52,7 @@ def login(username, password):
 def dashboard(user_json=None):
     ### Display dashboard with possible options
     option = None
-    while option != 7:
+    while option != 8:
         forecast(user_json) # Show forecast at the start of the dashboard
         view_progress(user_json) # Show progress at the start of the dashboard
         click.echo("\n --- Budgeting Dashboard ---")
@@ -60,7 +62,8 @@ def dashboard(user_json=None):
         click.echo("4. Log Spending")
         click.echo("5. Update Spending Entry")
         click.echo("6. Delete Spending Entry")
-        click.echo("7. Exit")
+        click.echo("7. Talk to Qwen AI")
+        click.echo("8. Exit")
         option = click.prompt("Please select an option", type=int)
         # Wait for 5 seconds
         time.sleep(2)
@@ -89,8 +92,11 @@ def dashboard(user_json=None):
         elif option == 6:
             click.echo("Deleting Spending Entry...")
             user = delete_spending(user_json)
-            update_user(user['username'], user)    
+            update_user(user['username'], user)   
         elif option == 7:
+            click.echo("Calling Qwen AI for you!") 
+            talk_to_Qwen(user_json)
+        elif option == 8:
             click.echo("Exiting Dashboard. Goodbye!")
         else:
             click.echo("Invalid option. Please try again.")
@@ -464,7 +470,15 @@ def forecast(user_json):
     console.print(forecast_table)
  
 
-
+def talk_to_Qwen(user_json):
+    """Talk to Qwen ai"""
+    click.echo("Starting AI chat. Type 'exit' or '/bye' to leave.\n")
+    while True:
+        user_input = input("\n\nYou: ")
+        if re.search(r'\b(bye|exit|quit|done)\b', user_input.lower()):
+            break
+        generate_advice(user_json, user_input)
+        
     
     
 cli.add_command(login)

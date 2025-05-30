@@ -1,6 +1,5 @@
 ### Connect to Firebase api for auth and retrieving data
 import hashlib
-import json
 import os
 
 
@@ -12,7 +11,7 @@ def get_user(username, password=None):
         return None
     
     with open(user_file, 'r') as f:
-        user_data = json.loads(f.read())
+        user_data = eval(f.read())  
     
     if password:
         # Hash the password using hashlib
