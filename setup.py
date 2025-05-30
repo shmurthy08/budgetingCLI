@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='budgetcli',
+    name='budgetingcli',
     version='0.1.0',
     author='Your Name',
     description='A CLI tool to track spending goals and habits',
@@ -14,7 +14,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'budgetcli=budgetcli.cli:cli',  # entrypoint to your CLI
+            'budgetingcli=budgetcli.cli:cli',  # entrypoint to your CLI
         ],
     },
     include_package_data=True,
