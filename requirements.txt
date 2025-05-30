@@ -5,3 +5,4 @@ python>=3.8,<4.0
 click
 rich
 ollama
+platformdirs

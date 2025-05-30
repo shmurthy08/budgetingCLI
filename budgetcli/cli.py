@@ -1,12 +1,12 @@
 ### leverage Click to create a CLI interface for budget management
 import click
-from file_io import get_user, create_user, update_user
+from .file_io import get_user, create_user, update_user
 import time
 from rich.console import Console
 from rich.table import Table
 import datetime
-from utils import get_days_elapsed, get_days_in_month, project_spending, check_reset_expenses
-from ai_chatting import generate_advice
+from .utils import get_days_elapsed, get_days_in_month, project_spending, check_reset_expenses
+from .ai_chatting import generate_advice
 import re
 
 
@@ -52,7 +52,7 @@ def login(username, password):
 def dashboard(user_json=None):
     ### Display dashboard with possible options
     option = None
-    while option != 8:
+    while option != 10:
         forecast(user_json) # Show forecast at the start of the dashboard
         view_progress(user_json) # Show progress at the start of the dashboard
         click.echo("\n --- Budgeting Dashboard ---")
@@ -498,7 +498,7 @@ def general_notes(user_json):
             break
         user_json['notes'].append({
             "text": note,
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
     return user_json
     
