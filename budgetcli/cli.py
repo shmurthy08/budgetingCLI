@@ -59,13 +59,14 @@ def dashboard(user_json=None):
         click.echo("1. View Profile")
         click.echo("2. Update Profile")
         click.echo("3. Add Goals")
-        click.echo("4. Log Spending")
-        click.echo("5. Update Spending Entry")
-        click.echo("6. Delete Spending Entry")
-        click.echo("7. Talk to Qwen AI")
-        click.echo("8. General Notes")
-        click.echo("9. View Notes")
-        click.echo("10. Exit")
+        click.echo("4. Modify Goals")
+        click.echo("5. Log Spending")
+        click.echo("6. Update Spending Entry")
+        click.echo("7. Delete Spending Entry")
+        click.echo("8. Talk to Qwen AI")
+        click.echo("9. General Notes")
+        click.echo("10. View Notes")
+        click.echo("11. Exit")
         option = click.prompt("Please select an option", type=int)
         # Wait for 5 seconds
         time.sleep(2)
@@ -84,27 +85,30 @@ def dashboard(user_json=None):
             update_user(user['username'], user)
             # Here you would implement goal addition logic
         elif option == 4:
+            user = modify_goals(user_json)
+            update_user(user['username'], user)
+        elif option == 5:
             click.echo("Logging Spending...")
             user = log_spending(user_json)
             update_user(user['username'], user)
-        elif option == 5:
+        elif option == 6:
             click.echo("Updating Spending Entry...")
             user = update_spending(user_json)
             update_user(user['username'], user)
-        elif option == 6:
+        elif option == 7:
             click.echo("Deleting Spending Entry...")
             user = delete_spending(user_json)
             update_user(user['username'], user)   
-        elif option == 7:
+        elif option == 8:
             click.echo("Calling Qwen AI for you!") 
             talk_to_Qwen(user_json)
-        elif option == 8:
+        elif option == 9:
             click.echo("Opening notes section")
             user = general_notes(user_json)
             update_user(user['username'], user)
-        elif option == 9:
-            view_notes(user_json)
         elif option == 10:
+            view_notes(user_json)
+        elif option == 11:
             click.echo("Exiting Dashboard. Goodbye!")
         else:
             click.echo("Invalid option. Please try again.")
@@ -190,6 +194,51 @@ def add_goals(user_json):
         goal_amount = click.prompt("Enter goal amount", type=float)
     
     return user_json
+   
+def modify_goals(user_json):
+    """ability to delete or update goals"""
+    click.echo("\n --- Modify Goals ---")
+    goals = user_json.get('goals', {})
+    if not isinstance(goals, dict):
+        click.echo("Goals data is not in the expected format.")
+        return user_json
+    if not goals:
+        click.echo("No goals set. Please add goals first.")
+        return user_json
+    click.echo("Available goals:")
+    for i, (goal_name, goal_amount) in enumerate(goals.items(), start=1):
+        click.echo(f"{i}. {goal_name} - ${goal_amount:,.2f}")
+    choice = click.prompt("Select an option: 1. Update Goal 2. Delete Goal", type=int)
+    if choice == 1:
+        goal_index = click.prompt("Enter the number of the goal to update", type=int) - 1
+        if goal_index < 0 or goal_index >= len(goals):
+            click.echo("Invalid goal selection.")
+            return user_json
+        goal_name = list(goals.keys())[goal_index]
+        new_goal_name = click.prompt(f"Enter new name for goal '{goal_name}'", default=goal_name)
+        new_goal_amount = click.prompt(f"Enter new amount for goal '{new_goal_name}'", type=float, default=goals[goal_name])
+        # Update the goal
+        del user_json['goals'][goal_name]
+        user_json['goals'][new_goal_name] = new_goal_amount
+        click.echo("Goal updated successfully!")
+       
+    elif choice == 2:
+        goal_index = click.prompt("Enter the number of the goal to delete", type=int) - 1
+        if goal_index < 0 or goal_index >= len(goals):
+            click.echo("Invalid goal selection.")
+            return user_json
+        goal_name = list(goals.keys())[goal_index]
+        confirm = click.confirm(f"Are you sure you want to delete the goal '{goal_name}'?", default=True)
+        if confirm:
+            del user_json['goals'][goal_name]
+            click.echo("Goal deleted successfully!")
+        else:
+            click.echo("Goal deletion cancelled.")
+    else:
+        click.echo("Invalid option selected. Please try again.")   
+    return user_json
+    
+   
         
 def log_spending(user_json):
     """Log spending for the user for the given username and category"""
