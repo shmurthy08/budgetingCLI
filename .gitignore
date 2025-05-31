@@ -1,3 +1,6 @@
 *users
 *__pycache__
 *.mp4
+*build*
+*budgetingcli*
+*dist*

@@ -2,9 +2,12 @@ from setuptools import setup, find_packages
 
 setup(
     name='budgetingcli',
-    version='0.1.0',
-    author='Your Name',
+    version='0.1.1',
+    author='Shree Murthy',
     description='A CLI tool to track spending goals and habits',
+    url='https://github.com/shmurthy08/budgetingCLI',
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     packages=find_packages(),
     install_requires=[
         'click',
